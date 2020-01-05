@@ -45,7 +45,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Model\RelayCommand.cs" />
+    <Compile Include="UnitTests\LCOV\Branch.cs" />
+    <Compile Include="UnitTests\LCOV\FileCoverage.cs" />
+    <Compile Include="UnitTests\LCOV\Function.cs" />
+    <Compile Include="UnitTests\LCOV\Line.cs" />
+    <Compile Include="UnitTests\Coverage.cs" />
+    <Compile Include="Helpers\VsSolutionHelper.cs" />
+    <Compile Include="Model\Class.cs" />
+    <Compile Include="Model\Coverage.cs" />
+    <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\Namespace.cs" />
+    <Compile Include="Model\Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Converters\LevelConverter.cs" />
+    <Compile Include="UI\CoverageWindow.cs" />
+    <Compile Include="UI\CoverageWindowCommand.cs" />
+    <Compile Include="UI\CoverageWindowControl.xaml.cs">
+      <DependentUpon>CoverageWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CoverageViewModel.cs" />
+    <Compile Include="UnitTests\LCOV\Parser.cs" />
     <Compile Include="VSCoveragePackage.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -54,11 +74,36 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.202" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.4.1057" />
+    <PackageReference Include="NuGet.VisualStudio">
+      <Version>5.4.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\CoverageWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UI\Resources\CoverageWindowCommand.png" />
+    <VSCTCompile Include="UI\VSCoveragePackage.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
