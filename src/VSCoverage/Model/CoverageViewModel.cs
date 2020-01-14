@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Composition;
@@ -33,12 +35,36 @@ namespace VSCoverage.Model
         private ICommand _updateCommand;
         public ICommand UpdateCommand => _updateCommand ?? (_updateCommand = new RelayCommand(x => UpdateItems()));
 
+        private ICommand _openFileCommand;
+        public ICommand OpenFileCommand => _openFileCommand ?? (_openFileCommand = new RelayCommand(x => OpenFile(x)));
+
         public int Level { get; set; }
 
         public CoverageViewModel()
         {
         }
 
+
+        private void OpenFile(object obj)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var c = obj as Class;
+            if (c is null)
+                return;
+
+            if (c.ProjectItem.IsOpen)
+            {
+                c.ProjectItem.Document.Activate();
+                return;
+            }
+
+            var windowFrame = VsShellUtilities.OpenDocumentWithSpecificEditor(ServiceProvider.GlobalProvider, c.FullPath,
+            new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}"), Microsoft.VisualStudio.VSConstants.LOGVIEWID.Code_guid);
+            if (windowFrame != null)
+            {
+                windowFrame.Show();
+            }
+        }
 
         private void UpdateItems()
         {

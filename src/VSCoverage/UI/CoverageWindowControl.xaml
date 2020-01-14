@@ -21,24 +21,17 @@
 
         <Grid Grid.IsSharedSizeScope="True" Grid.Row="1">
             <Grid.RowDefinitions>
-                <!-- Header row -->
                 <RowDefinition Height="Auto" />
-                <!-- Row for data -->
                 <RowDefinition />
             </Grid.RowDefinitions>
 
             <Grid.Resources>
-
-                <!-- Converts the level in the tree to the width of the spacer column -->
                 <converters:LevelConverter x:Key="levelConverter" />
-
-                <!-- Template for directory information at all levels -->
-                <HierarchicalDataTemplate ItemsSource="{Binding Items}"
-                                      DataType="{x:Type model:Item}">
+                <HierarchicalDataTemplate ItemsSource="{Binding Items}" DataType="{x:Type model:Item}">
                     <Grid>
-
-                        <!-- All column widths are shared except for column 1 which is sized
-                         to compensate for different indentation at each level -->
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.OpenFileCommand}" CommandParameter="{Binding .}" />
+                        </Grid.InputBindings>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition SharedSizeGroup="rowHeaderColumn"/>
                             <ColumnDefinition></ColumnDefinition>
@@ -76,8 +69,6 @@
                                 <TreeViewItem.Header>
                                     <TreeViewItem Name="treeViewItemToMeasure" Padding="0" />
                                 </TreeViewItem.Header>
-                                <!-- Set the width of Column 1 to the same width as the top level 
-                                 in the data -->
                                 <TreeViewItem.Width>
                                     <MultiBinding Converter="{StaticResource levelConverter}">
                                         <Binding Path="Level"></Binding>

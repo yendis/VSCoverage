@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using EnvDTE;
+using System.Diagnostics;
 
 namespace VSCoverage.Model
 {
@@ -6,5 +7,7 @@ namespace VSCoverage.Model
     public class Class : Item
     {
         public string FullPath { get; set; }
+
+        public ProjectItem ProjectItem { get; set; }
     }
 }

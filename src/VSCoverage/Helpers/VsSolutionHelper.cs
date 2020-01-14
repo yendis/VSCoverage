@@ -59,7 +59,7 @@ namespace VSCoverage.Helpers
                         current = ns;
                     }
 
-                    current.Items.Add(new Class { Name = c.Name, FullPath = c.FullPath });
+                    current.Items.Add(new Class { Name = c.Name, FullPath = c.FullPath, ProjectItem = c.ProjectItem });
                 }
             }
 
@@ -73,6 +73,8 @@ namespace VSCoverage.Helpers
             public string Namespace { get; set; }
 
             public string Name { get; set; }
+
+            public ProjectItem ProjectItem { get; set; }
         }
 
         private static IList<ClassInfo> GetProjectClasses(EnvDTE.Project project)
@@ -97,8 +99,9 @@ namespace VSCoverage.Helpers
                                 {
                                     FullPath = c.Properties.Item("FullPath").Value.ToString(),
                                     Namespace= codeNamespace.Name,
-                                    Name = codeType.Name
-                            });
+                                    Name = codeType.Name,
+                                    ProjectItem = c
+                                });
                             }
                         }
                     }
