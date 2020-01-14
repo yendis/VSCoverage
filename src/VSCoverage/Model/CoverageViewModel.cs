@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Composition;
 using System.Linq;
 using System.Windows.Input;
 using VSCoverage.Helpers;
@@ -9,7 +11,24 @@ namespace VSCoverage.Model
 {
     public class CoverageViewModel
     {
+        private static CoverageViewModel _instance;
+
+        public static CoverageViewModel Instance
+        {
+            get
+            {
+                if (_instance is null)
+                    _instance = new CoverageViewModel();
+
+                return _instance;
+            }
+        }
+
+        public DateTime? LastUpdatedUtc { get; set; }
+
         public ObservableCollection<Item> Items { get; } = new ObservableCollection<Item>();
+
+        public IList<FileCoverage> FileCoverages { get; private set; } = new List<FileCoverage>();
 
         private ICommand _updateCommand;
         public ICommand UpdateCommand => _updateCommand ?? (_updateCommand = new RelayCommand(x => UpdateItems()));
@@ -23,12 +42,14 @@ namespace VSCoverage.Model
 
         private void UpdateItems()
         {
+            LastUpdatedUtc = DateTime.UtcNow;
+
             var items = VsSolutionHelper.GetSolutionHierarchy();
             UpdateLevel(items);
             Level = items.Max(x => x.Level);
 
-            var coverage = UnitTests.Coverage.GetTestCoverage();
-            UpdateCoverage(items, coverage);
+            FileCoverages = UnitTests.Coverage.GetTestCoverage();
+            UpdateCoverage(items, FileCoverages);
 
             Items.Clear();
             foreach (var p in items)

@@ -1,8 +1,10 @@
 ﻿namespace VSCoverage.UI
 {
+    using Microsoft.VisualStudio.Shell;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
+    using VSCoverage.Model;
 
     /// <summary>
     /// Interaction logic for CoverageWindowControl.
@@ -15,6 +17,7 @@
         public CoverageWindowControl()
         {
             this.InitializeComponent();
+            this.DataContext = CoverageViewModel.Instance;
         }
 
         /// <summary>

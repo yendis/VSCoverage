@@ -56,9 +56,33 @@ namespace VSCoverage.UnitTests
             return result;
         }
 
-        private static void MergeFileCoverage(FileCoverage a, FileCoverage b)
+        private static void MergeFileCoverage(FileCoverage target, FileCoverage coverage)
         {
-            
+            foreach (var line in coverage.Lines)
+            {
+                var targetLine = target.Lines.FirstOrDefault(x => x.LineNumber == line.LineNumber);
+                if (targetLine is null)
+                {
+                    target.Lines.Add(line);
+                    continue;
+                }
+
+                targetLine.Hit = targetLine.Hit || line.Hit;
+            }
+
+            foreach (var branch in coverage.Branches)
+            {
+                var targetBranch = target.Branches.FirstOrDefault(x => x.LineNumber == branch.LineNumber &&
+                                                                       x.Block == branch.Block &&
+                                                                       x.Branch_ == branch.Branch_);
+                if (targetBranch is null)
+                {
+                    target.Branches.Add(branch);
+                    continue;
+                }
+
+                branch.Taken += targetBranch.Taken;
+            }
         }
     }
 }
