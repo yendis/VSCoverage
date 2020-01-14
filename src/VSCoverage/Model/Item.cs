@@ -7,7 +7,7 @@ namespace VSCoverage.Model
     {
         public string Name { get; set; }
 
-        public IList<Item> Items { get; } = new List<Item>();
+        public IList<Item> Items { get; set; } = new List<Item>();
 
         public Coverage Coverage { get; set; }
 

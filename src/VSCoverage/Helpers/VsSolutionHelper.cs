@@ -63,7 +63,25 @@ namespace VSCoverage.Helpers
                 }
             }
 
+            FlattenNamespaces(result);
             return result;
+        }
+
+        private static void FlattenNamespaces(IList<Item> items)
+        {
+            foreach (var item in items)
+            {
+                if (item is Namespace ns)
+                {
+                    while (ns.Items.Count == 1 && ns.Items[0] is Namespace inner)
+                    {
+                        item.Name = $"{item.Name}.{inner.Name}";
+                        item.Items = inner.Items;
+                    }
+                }
+
+                FlattenNamespaces(item.Items);
+            }
         }
 
         private struct ClassInfo
