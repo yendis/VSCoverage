@@ -33,7 +33,7 @@ namespace VSCoverage.Model
         public IList<FileCoverage> FileCoverages { get; private set; } = new List<FileCoverage>();
 
         private ICommand _updateCommand;
-        public ICommand UpdateCommand => _updateCommand ?? (_updateCommand = new RelayCommand(x => UpdateItems()));
+        public ICommand UpdateCommand => _updateCommand ?? (_updateCommand = new AsyncCommand(async () => { await UpdateItemsAsync(); }));
 
         private ICommand _openFileCommand;
         public ICommand OpenFileCommand => _openFileCommand ?? (_openFileCommand = new RelayCommand(x => OpenFile(x)));
@@ -43,7 +43,6 @@ namespace VSCoverage.Model
         public CoverageViewModel()
         {
         }
-
 
         private void OpenFile(object obj)
         {
@@ -66,7 +65,7 @@ namespace VSCoverage.Model
             }
         }
 
-        private void UpdateItems()
+        private async System.Threading.Tasks.Task UpdateItemsAsync()
         {
             LastUpdatedUtc = DateTime.UtcNow;
 
@@ -74,7 +73,7 @@ namespace VSCoverage.Model
             UpdateLevel(items);
             Level = items.Max(x => x.Level);
 
-            FileCoverages = UnitTests.Coverage.GetTestCoverage();
+            FileCoverages = await UnitTests.Coverage.GetTestCoverageAsync();
             UpdateCoverage(items, FileCoverages);
 
             Items.Clear();

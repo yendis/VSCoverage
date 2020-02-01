@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using VSCoverage.Helpers;
 using VSCoverage.UnitTests.LCOV;
 
@@ -10,13 +11,13 @@ namespace VSCoverage.UnitTests
     internal static class Coverage
     {
 
-        public static IList<FileCoverage> GetTestCoverage()
+        public static async Task<IList<FileCoverage>> GetTestCoverageAsync()
         {
             var result = new List<FileCoverage>();
             var testProjects = VsSolutionHelper.GetTestProjects();
             foreach (var testProject in testProjects)
             {
-                var projectResult = RunTestCoverage(testProject);
+                var projectResult = await RunTestCoverageAsync(testProject);
                 foreach (var fileCoverage in projectResult)
                 {
                     var existing = result.FirstOrDefault(x => x.FilePath == fileCoverage.FilePath);
@@ -30,13 +31,13 @@ namespace VSCoverage.UnitTests
             return result;
         }
 
-        private static IList<FileCoverage> RunTestCoverage(EnvDTE.Project project)
+        private static Task<IList<FileCoverage>> RunTestCoverageAsync(EnvDTE.Project project)
         {
             var directory = Path.GetDirectoryName(project.FileName);
-            return RunTestCoverage(directory);
+            return RunTestCoverageAsync(directory);
         }
 
-        private static IList<FileCoverage> RunTestCoverage(string path)
+        private static async Task<IList<FileCoverage>> RunTestCoverageAsync(string path)
         {
             var tmpPath = Path.GetTempFileName();
             
@@ -49,7 +50,7 @@ namespace VSCoverage.UnitTests
             p.StartInfo = startInfo;
 
             p.Start();
-            p.WaitForExit();
+            await p.WaitForExitAsync();
 
             var result = Parser.Parse(tmpPath);
             File.Delete(tmpPath);
